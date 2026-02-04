@@ -3,433 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ethereal Forge - AFK Idle Game</title>
+    <title>ShBot | All-in-One Discord Bot</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --gold: #d4af37;
-            --iron: #434343;
-            --mystic: #6366f1;
+            --discord-blurple: #5865F2;
+            --bg-dark: #0f1115;
         }
 
         body {
-            background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
-            color: #e5e5e5;
-            font-family: 'Raleway', sans-serif;
-            overflow-x: hidden;
-            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            margin: 0;
+            scroll-behavior: smooth;
         }
 
-        h1, h2, .font-cinzel {
-            font-family: 'Cinzel', serif;
-        }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-        }
-
-        .forge-btn {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .forge-btn:active {
-            transform: scale(0.95);
-        }
-
-        .forge-btn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,165,0,0.2) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .forge-btn:hover::after {
-            opacity: 1;
-        }
-
-        .particle {
-            position: absolute;
-            pointer-events: none;
-            animation: rise 2s ease-out forwards;
-        }
-
-        @keyframes rise {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-100px) scale(0); opacity: 0; }
-        }
-
-        .easter-egg {
+        /* Ambiance lumineuse diffuse */
+        .bg-glow {
             position: fixed;
-            cursor: pointer;
-            z-index: 50;
-            filter: drop-shadow(0 0 15px var(--mystic));
-            animation: drift 10s linear infinite;
-            display: none;
-        }
-
-        @keyframes drift {
-            0% { transform: translate(-100vw, 20vh) rotate(0deg); }
-            100% { transform: translate(100vw, 80vh) rotate(360deg); }
-        }
-
-        .achievement-toast {
-            position: fixed;
-            bottom: 20px;
-            right: -300px;
-            transition: right 0.5s ease-in-out;
-        }
-
-        .achievement-toast.show {
-            right: 20px;
-        }
-        
-        .progress-bar {
-            height: 4px;
-            background: #333;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .progress-fill {
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            background: var(--gold);
-            width: 0%;
-            transition: width 0.1s linear;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 10% 10%, rgba(88, 101, 242, 0.12) 0%, transparent 35%),
+                radial-gradient(circle at 90% 90%, rgba(88, 101, 242, 0.08) 0%, transparent 35%);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 24px;
+            text-align: center;
+        }
+
+        .bot-avatar-wrapper {
+            position: relative;
+            margin-bottom: 48px;
+        }
+
+        .bot-avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 48px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 25px rgba(88, 101, 242, 0.25);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background-color: #1e2124;
+        }
+
+        .bot-avatar:hover {
+            transform: translateY(-12px) scale(1.05) rotate(2deg);
+        }
+
+        h1 {
+            font-size: clamp(3.5rem, 12vw, 6rem);
+            font-weight: 800;
+            letter-spacing: -3px;
+            margin-bottom: 24px;
+            line-height: 0.9;
+            background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            color: #94a3b8;
+            max-width: 850px;
+            margin: 0 auto 60px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .btn-invite {
+            background-color: var(--discord-blurple);
+            padding: 22px 56px;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 35px rgba(88, 101, 242, 0.35);
+        }
+
+        .btn-invite:hover {
+            transform: translateY(-4px) scale(1.02);
+            background-color: #4752c4;
+            box-shadow: 0 25px 50px rgba(88, 101, 242, 0.5);
+        }
+
+        /* Section des fonctionnalités étendue */
+        .features-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 1100px;
+            width: 100%;
+            margin-top: 120px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 32px;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(88, 101, 242, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            color: var(--discord-blurple);
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 1.4rem;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        footer {
+            padding: 80px 24px;
+            text-align: center;
+            color: #475569;
+            font-size: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: 60px;
+        }
+
+        .copyright-text {
+            color: #94a3b8;
+            font-weight: 500;
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body>
 
-    <!-- Header Stats -->
-    <header class="max-w-6xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div>
-            <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-700">ETHEREAL FORGE</h1>
-            <p class="text-gray-400 italic text-sm">Le feu ne s'éteint jamais...</p>
+    <div class="bg-glow"></div>
+
+    <section class="hero">
+        <!-- Logo du Bot -->
+        <div class="bot-avatar-wrapper">
+            <img src="https://cdn.discordapp.com/avatars/1441774756687777802/e80a2f1d14971eb838f807e1ee02d370.png?size=512" 
+                 alt="Avatar ShBot" 
+                 class="bot-avatar">
         </div>
-        <div class="flex gap-8">
-            <div class="text-center">
-                <span class="block text-xs uppercase tracking-widest text-gray-500">Essence d'Âme</span>
-                <span id="currency" class="text-3xl font-bold text-indigo-400">0</span>
-            </div>
-            <div class="text-center">
-                <span class="block text-xs uppercase tracking-widest text-gray-500">Puissance</span>
-                <span id="power" class="text-3xl font-bold text-orange-500">1</span>
-            </div>
-        </div>
-    </header>
 
-    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <!-- Left: Improvements -->
-        <section class="space-y-4">
-            <h2 class="text-xl font-bold border-b border-gray-800 pb-2">Améliorations</h2>
-            
-            <div class="glass-panel p-4 flex justify-between items-center group cursor-pointer hover:bg-white/5" onclick="buyUpgrade('anvil')">
-                <div>
-                    <h3 class="font-bold text-gray-200">Enclume de Fer</h3>
-                    <p class="text-xs text-gray-400">+1 par clic</p>
-                    <p class="text-sm text-yellow-500 mt-1 italic">Niv. <span id="anvil-lvl">0</span></p>
-                </div>
-                <button class="bg-gray-800 px-4 py-2 rounded text-sm font-bold group-hover:bg-yellow-600 transition-colors">
-                    <span id="anvil-cost">10</span> ✨
-                </button>
-            </div>
+        <div class="px-4">
+            <h1>ShBot</h1>
+            <p class="subtitle">
+                Le bot <strong>All-in-One</strong> conçu pour simplifier la gestion de votre communauté. 
+                Une solution unique pour la modération, l'animation et les outils système.
+            </p>
 
-            <div class="glass-panel p-4 flex justify-between items-center group cursor-pointer hover:bg-white/5" onclick="buyUpgrade('bellows')">
-                <div>
-                    <h3 class="font-bold text-gray-200">Soufflet Magique</h3>
-                    <p class="text-xs text-gray-400">+1 auto / sec</p>
-                    <p class="text-sm text-yellow-500 mt-1 italic">Niv. <span id="bellows-lvl">0</span></p>
-                </div>
-                <button class="bg-gray-800 px-4 py-2 rounded text-sm font-bold group-hover:bg-indigo-600 transition-colors">
-                    <span id="bellows-cost">50</span> ✨
-                </button>
-            </div>
-
-            <div class="glass-panel p-4 flex justify-between items-center group cursor-pointer hover:bg-white/5" onclick="buyUpgrade('spirit')">
-                <div>
-                    <h3 class="font-bold text-gray-200">Esprit de Forge</h3>
-                    <p class="text-xs text-gray-400">+10 auto / sec</p>
-                    <p class="text-sm text-yellow-500 mt-1 italic">Niv. <span id="spirit-lvl">0</span></p>
-                </div>
-                <button class="bg-gray-800 px-4 py-2 rounded text-sm font-bold group-hover:bg-purple-600 transition-colors">
-                    <span id="spirit-cost">500</span> ✨
-                </button>
-            </div>
-        </section>
-
-        <!-- Center: Interaction -->
-        <section class="flex flex-col items-center justify-center space-y-8 py-12">
-            <div id="forge-click" class="forge-btn w-64 h-64 rounded-full flex items-center justify-center cursor-pointer bg-gradient-to-br from-gray-800 to-black shadow-2xl border-4 border-gray-700 hover:border-orange-500 relative">
-                <svg viewBox="0 0 24 24" class="w-32 h-32 fill-orange-500 drop-shadow-lg" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z" />
+            <!-- Bouton central -->
+            <a href="https://discord.com/oauth2/authorize?client_id=1441774756687777802&permissions=8&integration_type=0&scope=bot+applications.commands" 
+               class="btn-invite" 
+               target="_blank">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
-                <div id="click-ripple" class="absolute inset-0 rounded-full opacity-0 bg-orange-400 scale-0"></div>
-            </div>
-            <div class="w-full max-w-xs space-y-2">
-                <div class="flex justify-between text-xs text-gray-500 uppercase tracking-tighter">
-                    <span>Rechargement Mystique</span>
-                    <span id="auto-rate">0 / sec</span>
-                </div>
-                <div class="progress-bar">
-                    <div id="auto-progress" class="progress-fill"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Right: Achievements & Time -->
-        <section class="space-y-4">
-            <h2 class="text-xl font-bold border-b border-gray-800 pb-2">Succès & Temps</h2>
-            <div class="glass-panel p-4">
-                <p class="text-xs text-gray-500 uppercase">Temps de Méditation</p>
-                <p id="play-time" class="text-2xl font-mono text-gray-300">00:00:00</p>
-            </div>
-            
-            <div id="achievements-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-2">
-                <!-- Achievements injected here -->
-            </div>
-        </section>
-    </main>
-
-    <!-- Easter Egg Container -->
-    <div id="easter-egg" class="easter-egg text-4xl" onclick="triggerEasterEgg()">✨</div>
-
-    <!-- Achievement Toast -->
-    <div id="toast" class="achievement-toast glass-panel p-4 bg-indigo-900/50 border-indigo-500 flex items-center gap-4 shadow-2xl">
-        <div class="text-2xl">🏆</div>
-        <div>
-            <h4 class="font-bold text-sm">Succès Débloqué !</h4>
-            <p id="toast-desc" class="text-xs text-gray-300">Description du succès</p>
+                Ajouter ShBot à Discord
+            </a>
         </div>
-    </div>
 
-    <script>
-        // --- Game State ---
-        let gameState = {
-            currency: 0,
-            power: 1,
-            totalClicks: 0,
-            startTime: Date.now(),
-            playTimeSeconds: 0,
-            upgrades: {
-                anvil: { lvl: 0, baseCost: 10, multiplier: 1.5 },
-                bellows: { lvl: 0, baseCost: 50, multiplier: 1.7 },
-                spirit: { lvl: 0, baseCost: 500, multiplier: 1.9 }
-            },
-            achievements: []
-        };
+        <!-- Grille de présentation -->
+        <div class="features-container">
+            <div class="feature-card">
+                <h3>Auto-Modération</h3>
+                <p>Système intelligent de filtrage pour garder votre serveur sain 24h/24 sans effort manuel.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Système Multi-fonctions</h3>
+                <p>Musique HD, économie globale, niveaux et jeux pour engager vos membres activement.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Outils Serveur</h3>
+                <p>Logs détaillés, gestion des rôles et configuration facile via des commandes intuitives.</p>
+            </div>
+        </div>
+    </section>
 
-        const achievementsDef = [
-            { id: 'start', title: 'Premier Souffle', desc: 'Jouer 1 minute', target: 60, type: 'time' },
-            { id: 'apprentice', title: 'Apprenti Forgeron', desc: 'Jouer 10 minutes', target: 600, type: 'time' },
-            { id: 'master', title: 'Maître du Temps', desc: 'Jouer 1 heure', target: 3600, type: 'time' },
-            { id: 'click100', title: 'Main Agile', desc: 'Cliquer 100 fois', target: 100, type: 'clicks' }
-        ];
+    <footer>
+        <p class="copyright-text">Copyright © ShBot - 2026 • Propulsé par ShauneSama</p>
+        <p class="mt-4 text-xs tracking-widest uppercase opacity-30">ID de l'application : 1441774756687777802</p>
+    </footer>
 
-        // --- Core Logic ---
-        function init() {
-            loadGame();
-            updateUI();
-            
-            // Interaction
-            document.getElementById('forge-click').addEventListener('mousedown', clickForge);
-            
-            // Loops
-            setInterval(gameLoop, 1000);
-            setInterval(autoSave, 10000);
-            setInterval(checkEasterEgg, 30000); // Check every 30s
-            
-            renderAchievements();
-        }
-
-        function clickForge(e) {
-            gameState.currency += gameState.power;
-            gameState.totalClicks++;
-            
-            createParticle(e.clientX, e.clientY);
-            checkAchievements();
-            updateUI();
-            
-            // Visual feedback
-            const ripple = document.getElementById('click-ripple');
-            ripple.style.transform = 'scale(1)';
-            ripple.style.opacity = '0.3';
-            setTimeout(() => {
-                ripple.style.transform = 'scale(0)';
-                ripple.style.opacity = '0';
-            }, 200);
-        }
-
-        function gameLoop() {
-            // Update Time
-            gameState.playTimeSeconds = Math.floor((Date.now() - (gameState.startTime - (gameState.playTimeSeconds * 1000))) / 1000);
-            
-            // Auto Income
-            const autoIncome = (gameState.upgrades.bellows.lvl * 1) + (gameState.upgrades.spirit.lvl * 10);
-            if (autoIncome > 0) {
-                gameState.currency += autoIncome;
-                animateProgressBar();
-            }
-
-            checkAchievements();
-            updateUI();
-        }
-
-        function buyUpgrade(id) {
-            const upgrade = gameState.upgrades[id];
-            const cost = Math.floor(upgrade.baseCost * Math.pow(upgrade.multiplier, upgrade.lvl));
-            
-            if (gameState.currency >= cost) {
-                gameState.currency -= cost;
-                upgrade.lvl++;
-                
-                if (id === 'anvil') {
-                    gameState.power = 1 + upgrade.lvl;
-                }
-                
-                updateUI();
-            }
-        }
-
-        // --- Systems ---
-        function createParticle(x, y) {
-            const p = document.createElement('div');
-            p.className = 'particle text-orange-400 font-bold';
-            p.style.left = x + 'px';
-            p.style.top = y + 'px';
-            p.innerText = '+' + gameState.power;
-            document.body.appendChild(p);
-            setTimeout(() => p.remove(), 2000);
-        }
-
-        function animateProgressBar() {
-            const fill = document.getElementById('auto-progress');
-            fill.style.transition = 'none';
-            fill.style.width = '0%';
-            setTimeout(() => {
-                fill.style.transition = 'width 1s linear';
-                fill.style.width = '100%';
-            }, 50);
-        }
-
-        function checkEasterEgg() {
-            const rand = Math.random();
-            const egg = document.getElementById('easter-egg');
-            
-            // Probability: 5% Rare, 1% Hyper Rare
-            if (rand < 0.05) {
-                const isHyper = rand < 0.01;
-                egg.innerHTML = isHyper ? '💎' : '🔥';
-                egg.dataset.type = isHyper ? 'hyper' : 'rare';
-                egg.style.display = 'block';
-                
-                setTimeout(() => {
-                    egg.style.display = 'none';
-                }, 10000);
-            }
-        }
-
-        function triggerEasterEgg() {
-            const egg = document.getElementById('easter-egg');
-            const type = egg.dataset.type;
-            const bonus = type === 'hyper' ? gameState.currency * 0.5 + 500 : gameState.currency * 0.1 + 50;
-            
-            gameState.currency += Math.floor(bonus);
-            egg.style.display = 'none';
-            showToast("Easter Egg !", "Bonus récolté : " + Math.floor(bonus) + " ✨");
-        }
-
-        function checkAchievements() {
-            achievementsDef.forEach(ach => {
-                if (gameState.achievements.includes(ach.id)) return;
-
-                let reached = false;
-                if (ach.type === 'time' && gameState.playTimeSeconds >= ach.target) reached = true;
-                if (ach.type === 'clicks' && gameState.totalClicks >= ach.target) reached = true;
-
-                if (reached) {
-                    gameState.achievements.push(ach.id);
-                    showToast(ach.title, ach.desc);
-                    renderAchievements();
-                }
-            });
-        }
-
-        // --- UI & Helpers ---
-        function updateUI() {
-            document.getElementById('currency').innerText = Math.floor(gameState.currency).toLocaleString();
-            document.getElementById('power').innerText = gameState.power;
-            
-            // Upgrades UI
-            for (const [id, data] of Object.entries(gameState.upgrades)) {
-                const cost = Math.floor(data.baseCost * Math.pow(data.multiplier, data.lvl));
-                document.getElementById(`${id}-lvl`).innerText = data.lvl;
-                document.getElementById(`${id}-cost`).innerText = cost.toLocaleString();
-            }
-
-            // Time UI
-            const h = Math.floor(gameState.playTimeSeconds / 3600).toString().padStart(2, '0');
-            const m = Math.floor((gameState.playTimeSeconds % 3600) / 60).toString().padStart(2, '0');
-            const s = (gameState.playTimeSeconds % 60).toString().padStart(2, '0');
-            document.getElementById('play-time').innerText = `${h}:${m}:${s}`;
-            
-            const autoIncome = (gameState.upgrades.bellows.lvl * 1) + (gameState.upgrades.spirit.lvl * 10);
-            document.getElementById('auto-rate').innerText = autoIncome + " / sec";
-        }
-
-        function renderAchievements() {
-            const list = document.getElementById('achievements-list');
-            list.innerHTML = '';
-            achievementsDef.forEach(ach => {
-                const unlocked = gameState.achievements.includes(ach.id);
-                const div = document.createElement('div');
-                div.className = `p-3 rounded border transition-all ${unlocked ? 'bg-indigo-900/20 border-indigo-500/50 opacity-100' : 'bg-gray-900/40 border-gray-800 opacity-40'}`;
-                div.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-sm ${unlocked ? 'text-indigo-300' : 'text-gray-500'}">${ach.title}</span>
-                        <span>${unlocked ? '✅' : '🔒'}</span>
-                    </div>
-                    <p class="text-[10px] text-gray-400 mt-1">${ach.desc}</p>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        function showToast(title, desc) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-desc').innerText = desc;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 5000);
-        }
-
-        // --- Persistence ---
-        function autoSave() {
-            localStorage.setItem('etherealForge_save', JSON.stringify(gameState));
-            console.log('Jeu sauvegardé.');
-        }
-
-        function loadGame() {
-            const saved = localStorage.getItem('etherealForge_save');
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                // Fusion pour éviter de casser le jeu lors des mises à jour
-                gameState = { ...gameState, ...parsed };
-                gameState.startTime = Date.now(); // Reset session timer but keep playTimeSeconds
-            }
-        }
-
-        window.onload = init;
-    </script>
 </body>
 </html>
 
